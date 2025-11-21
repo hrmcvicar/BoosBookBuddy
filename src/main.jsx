@@ -1,5 +1,11 @@
 import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router";
 import App from "./App.jsx";
 import "./App.css";
 
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
+//app has to be child of browserRouter

@@ -1,0 +1,11 @@
+.booksContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.book {
+  border: 1ch black dotted;
+}
+.book > img {
+  width: 150px;
+}
