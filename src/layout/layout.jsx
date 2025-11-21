@@ -1,10 +1,10 @@
 import { Outlet } from "react-router";
 import Navbar from "./Navbar";
 
-const Layout = () => {
+const Layout = ({ user, setUser }) => {
   return (
     <div>
-      <Navbar />
+      <Navbar user={user} setUser={setUser} />
       <Outlet />
     </div>
   );

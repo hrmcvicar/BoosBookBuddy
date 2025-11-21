@@ -1,18 +1,52 @@
+import { useEffect, useState } from "react"; //why put in app not books?
+import { Routes, Route } from "react-router";
+import axios from "axios";
+
 import Books from "./Books/Books";
 import SingleBook from "./Books/SingleBook";
 import Layout from "./layout/layout";
-import { useEffect, useState } from "react"; //why put in app not books?
-import axios from "axios";
-import { Routes, Route } from "react-router";
+import Login from "./Auth/Login";
+import Register from "./Auth/Register";
+import Account from "./Auth/Account";
 
 function App() {
   const [books, setBooks] = useState([]); //assuming we get an array which we do
+  const [user, setUser] = useState({}); //for login purposes
+
+  //auth will make a backend call
+  //get verb bc reading info
+  const authenticate = async () => {
+    try {
+      const { data } = await axios.get(
+        "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me",
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem("token")}`, //we are passing in a token - why?
+            //verify logged in and have a token -> implies they are who they say they are
+          },
+        }
+      );
+      console.log(data);
+      setUser(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (window.localStorage.getItem("token")) {
+      authenticate();
+    }
+  }, [user.id]); //says dependent on userID-> anytime changes, run the useEffect
+  //why call authenticate and useEffect in App?
+  //keep from refreshing
+
   useEffect(() => {
     const fetchAllBooks = async () => {
       const { data } = await axios.get(
         "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books"
       );
-      console.log(data); //data is an array of objects
+      //console.log(data); //data is an array of objects
       setBooks(data);
     };
     fetchAllBooks();
@@ -20,7 +54,7 @@ function App() {
   //when talking to a database, we need async
   //but useEffect CANNOT be async, it runs at a certain point in time in lifecycle
   //so function inside can be async
-  console.log("App books:", books);
+  //console.log("App books:", books);
 
   return (
     <div>
@@ -29,11 +63,17 @@ function App() {
         Boo's Book Buddy
       </h1>
       <Routes>
-        <Route element={<Layout />}>
+        <Route element={<Layout user={user} setUser={setUser} />}>
           <Route index element={<Books books={books} />} />
           <Route path="/" element={<Books books={books} />} />
           <Route path="/books" element={<Books books={books} />} />
           <Route path="/books/:id" element={<SingleBook books={books} />} />
+          <Route
+            path="/login"
+            element={<Login authenticate={authenticate} />}
+          />
+          <Route path="/register" element={<Register />} />
+          <Route path="/account" element={<Account user={user} />} />
         </Route>
       </Routes>
     </div>

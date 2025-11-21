@@ -11,3 +11,12 @@ body {
 }
 
 /* Add your own custom styles here */
+
+#loginForm {
+  display: flex;
+  flex-direction: column;
+}
+
+#loginForm > label {
+  margin: 1rem;
+}
