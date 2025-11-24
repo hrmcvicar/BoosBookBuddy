@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router";
 
-const SingleBook = ({ books }) => {
+const SingleBook = ({ books, addToRez, user, checkRez }) => {
   const { id } = useParams();
   //console.log(params);
   const singleBook = books.find((book) => {
@@ -25,6 +25,19 @@ const SingleBook = ({ books }) => {
       <div>
         <Link to="/books">Back to all books </Link>
       </div>
+      {user.id ? (
+        checkRez(singleBook.id) ? (
+          <button disabled={true}>Reserved</button>
+        ) : (
+          <button
+            onClick={() => {
+              addToRez(singleBook.id); //singleBook id bc above usees single
+            }}
+          >
+            Reserve this book
+          </button>
+        )
+      ) : null}
     </div>
   );
 };

@@ -11,7 +11,8 @@ import Account from "./Auth/Account";
 
 function App() {
   const [books, setBooks] = useState([]); //assuming we get an array which we do
-  const [user, setUser] = useState({}); //for login purposes
+  const [user, setUser] = useState({}); //for login purposes , set user as an object w email:passwrd
+  const [reservations, setReservations] = useState([]); //need list like books list so array default value
 
   //auth will make a backend call
   //get verb bc reading info
@@ -26,12 +27,72 @@ function App() {
           },
         }
       );
-      console.log(data);
+      //console.log(data);
       setUser(data);
     } catch (error) {
       console.error(error);
     }
   };
+  const addToRez = async (bookId) => {
+    try {
+      const { data } = await axios.post(
+        "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations",
+        { bookId },
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setReservations([...reservations, data]);
+      //setRez needs an array but we saw data is an object
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+      console.log(error.response?.status); //to debug why it was giving errors
+      console.log(error.response?.data);
+    }
+  };
+  const removeFromRez = async (id) => {
+    try {
+      await axios.delete(
+        `https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const newRez = reservations.filter((reservation) => {
+        return reservation.id !== id;
+      });
+      setReservations(newRez);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const checkRez = (bookId) => {
+    return reservations.find((rez) => {
+      return rez.id === bookId;
+    });
+  };
+  useEffect(() => {
+    const fetchRez = async () => {
+      const { data } = await axios.get(
+        "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations",
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setReservations(data);
+      //console.log(data);
+    };
+    if (window.localStorage.getItem("token")) {
+      fetchRez();
+    }
+  }, [user.id]);
 
   useEffect(() => {
     if (window.localStorage.getItem("token")) {
@@ -67,13 +128,32 @@ function App() {
           <Route index element={<Books books={books} />} />
           <Route path="/" element={<Books books={books} />} />
           <Route path="/books" element={<Books books={books} />} />
-          <Route path="/books/:id" element={<SingleBook books={books} />} />
+          <Route
+            path="/books/:id"
+            element={
+              <SingleBook
+                books={books}
+                addToRez={addToRez}
+                user={user}
+                checkRez={checkRez}
+              />
+            }
+          />
           <Route
             path="/login"
             element={<Login authenticate={authenticate} />}
           />
           <Route path="/register" element={<Register />} />
-          <Route path="/account" element={<Account user={user} />} />
+          <Route
+            path="/account"
+            element={
+              <Account
+                user={user}
+                reservations={reservations}
+                removeFromRez={removeFromRez}
+              />
+            }
+          />
         </Route>
       </Routes>
     </div>

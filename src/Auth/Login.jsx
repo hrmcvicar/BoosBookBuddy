@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const Login = ({ authenticate }) => {
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ const Login = ({ authenticate }) => {
 
         <button type="submit">Login</button>
       </form>
+      <Link to="/register">Need an account? Register here.</Link>
     </div>
   );
 };

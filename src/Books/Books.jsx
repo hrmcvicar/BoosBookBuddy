@@ -3,7 +3,7 @@ import "./books.css";
 import { Link } from "react-router";
 
 const Books = ({ books }) => {
-  console.log("books is:", books);
+  //console.log("books is:", books);
 
   return (
     <div className="booksContainer">
