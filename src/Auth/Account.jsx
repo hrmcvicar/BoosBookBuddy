@@ -1,9 +1,9 @@
 import { Link } from "react-router";
 
-const Account = ({ user, reservations, setReservations, removeFromRez }) => {
+const Account = ({ user, reservations, removeFromRez }) => {
   //const returnBook = () => {
   //window.localStorage.removeItem("token");
-  //setReservations({}) - not quite, just want to delee id
+  //setReservations({ ...reservations });
   //finish this function for returningbook
   //};
   return (

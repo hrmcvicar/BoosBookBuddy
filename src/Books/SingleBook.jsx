@@ -11,10 +11,18 @@ const SingleBook = ({ books, addToRez, user, checkRez }) => {
   //so rn find wont work bc theres no data in the array
   //add the if statement below to prevent the white screen
   //we dont have a single book state like in the past
+  console.log(
+    "checkRez(singleBook.id):",
+    singleBook?.id ? checkRez(singleBook.id) : "no id yet"
+  );
 
   if (!singleBook) {
     return <div>Loading...</div>;
   }
+  //console.log("user:", user);
+  //console.log("user.id:", user?.id);
+  //console.log("singleBook:", singleBook);
+  //console.log("singleBook.id:", singleBook?.id);
 
   return (
     <div className="book">

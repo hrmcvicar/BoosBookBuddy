@@ -46,11 +46,11 @@ function App() {
       );
       setReservations([...reservations, data]);
       //setRez needs an array but we saw data is an object
-      console.log(data);
+      //console.log(data);
     } catch (error) {
       console.error(error);
-      console.log(error.response?.status); //to debug why it was giving errors
-      console.log(error.response?.data);
+      //console.log(error.response?.status); //to debug why it was giving errors
+      //console.log(error.response?.data);
     }
   };
   const removeFromRez = async (id) => {
@@ -72,35 +72,47 @@ function App() {
     }
   };
   const checkRez = (bookId) => {
-    return reservations.find((rez) => {
-      return rez.id === bookId;
-    });
+    return reservations.find((rez) => rez.bookid === bookId);
   };
-  useEffect(() => {
-    const fetchRez = async () => {
-      const { data } = await axios.get(
-        "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations",
-        {
-          headers: {
-            Authorization: `Bearer ${window.localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setReservations(data);
-      //console.log(data);
-    };
-    if (window.localStorage.getItem("token")) {
-      fetchRez();
-    }
-  }, [user.id]);
+  //console.log(checkRez);
 
   useEffect(() => {
+    console.log("authenticate effect ran");
+
     if (window.localStorage.getItem("token")) {
       authenticate();
     }
-  }, [user.id]); //says dependent on userID-> anytime changes, run the useEffect
+  }, []); //says dependent on userID-> anytime changes, run the useEffect
   //why call authenticate and useEffect in App?
   //keep from refreshing
+
+  useEffect(() => {
+    //console.log("reservations effect ran, user.id =", user.id);
+
+    if (!user.id) return;
+    if (!window.localStorage.getItem("token")) return;
+
+    const fetchRez = async () => {
+      try {
+        const { data } = await axios.get(
+          "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations",
+          {
+            headers: {
+              Authorization: `Bearer ${window.localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setReservations(data);
+        //console.log(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchRez();
+  }, [user.id]);
+  useEffect(() => {
+    console.log("reservations state:", reservations);
+  }, [reservations]);
 
   useEffect(() => {
     const fetchAllBooks = async () => {
@@ -159,6 +171,7 @@ function App() {
     </div>
   );
 }
+//add 404 error
 
 export default App;
 
