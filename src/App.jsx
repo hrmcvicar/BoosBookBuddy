@@ -33,6 +33,7 @@ function App() {
       console.error(error);
     }
   };
+
   const addToRez = async (bookId) => {
     try {
       const { data } = await axios.post(
@@ -44,8 +45,16 @@ function App() {
           },
         }
       );
-      setReservations([...reservations, data]);
-      //setRez needs an array but we saw data is an object
+      const rez = await axios.get(
+        "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations",
+        {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setReservations(rez.data); //setRez needs an array but we saw data is an object
       //console.log(data);
     } catch (error) {
       console.error(error);
